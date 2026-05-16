@@ -17,10 +17,12 @@ MSG_PATTERN = re.compile(
     r"(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})"  # date
     r",?\s+"  # comma + space
     r"(\d{1,2}:\d{2}(?::\d{2})?(?:\s?[AaPp][Mm])?)"  # time (HH:MM or HH:MM:SS, optional AM/PM)
-    r"\]?\s*[-\u2013]\s*"  # ] or - separator
-    r"([^:]+):\s"  # sender
+    r"\]?\s*[—–-]\s*"  # ] or - separator
+    r"([^:]+):\s*"  # sender
     r"(.+)$"  # message text
 )
+
+TEXT_ONLY_PATTERN = re.compile(r"^[^0-9].*")
 
 # Content to drop
 DROP_IF_CONTAINS = [
@@ -57,6 +59,10 @@ DROP_IF_CONTAINS = [
     "pinned a message",
 ]
 
+DROP_SENDERS = {
+    "Meta AI",
+}
+
 MIN_WORDS = 2
 
 
@@ -76,7 +82,11 @@ def parse_export(filepath: str) -> list:
             f"\n  (In WhatsApp: open the group -> menu -> More -> Export chat -> Without media)"
         )
 
-    raw_text = path.read_text(encoding="utf-8", errors="ignore")
+    raw_text = (
+        path.read_text(encoding="utf-8", errors="ignore")
+        .replace("\u202f", " ")
+        .replace("\u00a0", " ")
+    )
     lines = raw_text.splitlines()
 
     messages = []
@@ -99,10 +109,14 @@ def parse_export(filepath: str) -> list:
                 "timestamp": f"{date_str} {time_str.strip()}",
                 "text": text.strip(),
             }
-        else:
-            # Continuation line - append to current message
+
+        elif TEXT_ONLY_PATTERN.match(line):
+            # Legit continuation line
             if current is not None:
                 current["text"] += f" {line}"
+
+        else:
+            continue
 
     if current is not None:
         messages.append(current)
@@ -121,6 +135,9 @@ def clean_messages(messages: list, min_words: int = MIN_WORDS) -> list:
         text_lower = msg["text"].lower()
 
         if any(pattern in text_lower for pattern in DROP_IF_CONTAINS):
+            continue
+
+        if msg["sender"] in DROP_SENDERS:
             continue
 
         words = msg["text"].split()
