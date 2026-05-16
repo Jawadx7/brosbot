@@ -1,1 +1,42 @@
-# config.yaml — to be implemented
+# All hyperparameters for the CockBlock_AI LoRA fine-tune.
+# Edit this file to tune training -- train.py reads it automatically.
+
+model:
+  name: "Qwen/Qwen2.5-1.5B" # base model from HuggingFace
+  max_seq_length: 512 # max tokens per training example (our avg is ~158, so 512 is safe)
+  load_in_4bit: true # 4-bit quantization: reduces VRAM from ~3GB to ~1GB (required for free Colab T4)
+
+lora:
+  r: 16 # rank -- expressiveness of the adaptation (16 = sweet spot for style)
+  alpha: 32 # scaling factor (convention: 2x rank)
+  dropout: 0.05 # small dropout for regularisation
+  target_modules: # which weight matrices to attach adapters to
+    - q_proj # query
+    - k_proj # key
+    - v_proj # value
+    - o_proj # output
+    - gate_proj # feed-forward gate (included for richer style capture)
+    - up_proj
+    - down_proj
+  bias: "none"
+
+training:
+  epochs: 3 # full passes through the data (push to 5 if loss still falling)
+  batch_size: 2 # examples per GPU step (keep low for T4 VRAM)
+  gradient_accumulation_steps: 8 # effective batch = batch_size x grad_accum = 16
+  learning_rate: 2.0e-4 # AdamW lr (2e-4 is standard for LoRA)
+  warmup_steps: 50 # lr ramps up over first 50 steps (prevents early instability)
+  lr_scheduler: "cosine" # cosine decay after warmup
+  weight_decay: 0.01
+  max_grad_norm: 1.0 # gradient clipping
+  seed: 42
+
+  # Logging and saving
+  logging_steps: 25 # print loss every N steps
+  save_steps: 200 # save a checkpoint every N steps
+  output_dir: "model/adapter" # where the adapter weights are saved
+
+data:
+  train_file: "data/processed/train.txt"
+  separator: "<|endoftext|>" # how windows are separated in train.txt
+  packing: true # pack short examples together to fill max_seq_length efficiently
