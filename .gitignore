@@ -1,0 +1,23 @@
+# Secrets
+.env
+
+# Model weights (large, not tracked)
+model/adapter/
+
+# Raw personal chat data (never commit)
+data/raw/
+data/processed/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Node
+node_modules/
+.next/
+
+# System
+.DS_Store
+Thumbs.db
