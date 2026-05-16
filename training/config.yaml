@@ -3,13 +3,13 @@
 
 model:
   name: "Qwen/Qwen2.5-1.5B" # base model from HuggingFace
-  max_seq_length: 512 # max tokens per training example (our avg is ~158, so 512 is safe)
+  max_seq_length: 1024 # max tokens per training example
   load_in_4bit: true # 4-bit quantization: reduces VRAM from ~3GB to ~1GB (required for free Colab T4)
 
 lora:
   r: 16 # rank -- expressiveness of the adaptation (16 = sweet spot for style)
   alpha: 32 # scaling factor (convention: 2x rank)
-  dropout: 0.05 # small dropout for regularisation
+  dropout: 0.0 # small dropout for regularisation
   target_modules: # which weight matrices to attach adapters to
     - q_proj # query
     - k_proj # key
