@@ -1,5 +1,6 @@
 # Secrets
 .env
+.venv
 
 # Model weights (large, not tracked)
 model/adapter/
@@ -24,3 +25,6 @@ Thumbs.db
 
 # Debug
 debug.py
+
+
+model
