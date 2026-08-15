@@ -28,3 +28,5 @@ debug.py
 
 
 model
+app/server/.env
+app/server/node_modules

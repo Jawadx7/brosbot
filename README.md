@@ -8,7 +8,7 @@ a participant in a custom real-time group chat interface.
 - `training/`  LoRA fine-tuning scripts (designed to run on Google Colab)
 - `model/`     Saved LoRA adapter weights (not committed to git)
 - `agent/`     Python bot agent — trigger logic + local LLM inference
-- `server/`    Next.js group chat app — frontend + Socket.io server
+- `app/`       JavaScript group chat app — frontend + Socket.io server
  
 ## Steps
 1. Parse WhatsApp export        →  python data/parse.py
