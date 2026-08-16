@@ -39,6 +39,8 @@ DROP_IF_CONTAINS = [
     "this message was deleted",
     "This message was deleted",
     "<This message was edited>",
+    "<This message was edited>",
+    "This message was edited",
     "you deleted this message",
     "missed voice call",
     "missed video call",
