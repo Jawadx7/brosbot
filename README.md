@@ -1,9 +1,9 @@
-# CockBlockAI
+# BrosBotAI
 
 A group-chat voice LLM, fine-tuned on a real WhatsApp group conversation and
 deployed as an active participant in a custom real-time group chat interface.
 
-CockBlockAI learns how *your* group talks — the slang, the energy, the
+BrosBotAI learns how *your* group talks — the slang, the energy, the
 in-jokes — by fine-tuning a small open model (Qwen2.5-1.5B) on plain text
 extracted from a WhatsApp group export. It then joins a live group chat as a
 bot (internally referred to as **BrosBot**), deciding when to chime in, tag
